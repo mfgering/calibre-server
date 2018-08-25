@@ -21,5 +21,8 @@ COPY files/calibre /root/.config/calibre
 EXPOSE 8080
 VOLUME        ["/books"]
 
+#NOTE: The --enable-auth option requires users and passwords be
+# initialized in /root/.config/calibre/server-users.sqlite
+# Use the calibre-server --manage-users option to set it up
 ENTRYPOINT ["/usr/bin/calibre-server","--enable-auth", "/books"]
 
