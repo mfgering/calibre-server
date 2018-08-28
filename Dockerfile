@@ -18,6 +18,7 @@ RUN set -xe \
     && calibredb add -e --with-library=/books \
     && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 COPY files/entrypoint.sh /entrypoint.sh
+COPY files/add_user.py /add_user.py
 
 EXPOSE 8080
 VOLUME        ["/books"]
