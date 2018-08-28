@@ -8,7 +8,7 @@ LABEL description="Run a calibre-server within an ubuntu container."
 
 ENV CALIBRE_URL https://download.calibre-ebook.com/linux-installer.sh
 ENV CALIBRE_DEPS xdg-utils wget xz-utils python dumb-init
-ENV CALIBRE_SERVER_ARGS --enable-auth /books
+ENV CALIBRE_LIBRARY /books
 
 RUN set -xe \
     && apt-get update \
@@ -21,6 +21,7 @@ COPY files/entrypoint.sh /entrypoint.sh
 
 EXPOSE 8080
 VOLUME        ["/books"]
+VOLUME        ["/root/.config/calibre"]
 
 ENTRYPOINT ["dumb-init", "/entrypoint.sh"]
 CMD ["calibre-server"]
