@@ -8,8 +8,9 @@ if [ "$1" = "bash" ]; then
 	exec /bin/bash "$@"
 fi
 if [ "$1" = "calibre-server" ]; then
-	if [ ! "$CALIBRE_USER" = "" ]; then
-	/opt/calibre/calibre-debug add_user.py "$CALIBRE_USER" "$CALIBRE_PASS"
+	if [ ! -z "$CALIBRE_USER" ]; then
+		/opt/calibre/calibre-debug add_user.py "$CALIBRE_USER" "$CALIBRE_PASS"
+	fi
 	AUTH_OPT=""
 	if [ -f "/root/.config/calibre/server-users.sqlite" ]; then
 		AUTH_OPT="--enable-auth"
@@ -17,5 +18,5 @@ if [ "$1" = "calibre-server" ]; then
 	shift
 	exec /opt/calibre/calibre-server $AUTH_OPT $@ $CALIBRE_LIBRARY
 fi
-echo "Do not uderstand $@"
+echo "Do not understand $@"
 
