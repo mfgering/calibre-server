@@ -7,8 +7,8 @@ I tried using *calibre-web* program. Unfortunately, it does not play well with *
 
 This docker image runs a calibre server in an Ubuntu OS.
 
-A related docker image is used to manage the user database: *mgering/calibre-users*.
-You will need one or more users and use authentication for modifying the library via the web interface.
+You will need one or more users and use authentication for modifying the library via the web interface. There are two ways to accomplish this, 
+as you will see in the following section.
 
 Configuration
 =============
@@ -19,7 +19,12 @@ The */root/.config/calibre* volume is where Calibre stores its configuration fil
 including an optional users database, *server-users.sqlite*. 
 
 If you want Calibre to use authentication, you should define and manage one or
-more users. The easiest way is to run another image, *mgering/calibre-users* with
+more users. You can add a user and password two ways:
+
+1. Define environment variables *CALIBRE_USER* and *CALIBRE_PASS* when
+running this image, and/or
+
+2. Run the related image,  *mgering/calibre-users* with
 the same volume for */root/.config/calibre*. Then when you run this container, the
 startup script will notice that the user database exists, and it will supply 
 the *--enable-auth* option to the *calibre-server*.
@@ -27,9 +32,7 @@ the *--enable-auth* option to the *calibre-server*.
 Operation
 =========
 
-Optionally, first prepare a user database with *mgering/calibre-users* if you want to use authentication.
-
-Then run this image:
+Basic way to run this image:
 
 ```
 docker run -d -v calibre-config:/root/.config/calibre -v calibre-library:/books -p 9080:8080 mgering/calibre-server
@@ -41,3 +44,16 @@ Details for the above command:
 * The *calibre-library* volume is used to hold the books
 * The server web interface is exposed on port 8080 and mapped to the host's port 9080.
 
+If you want to use authentication, you can add a user to the server's database
+by passing in two environment variables, CALIBRE_USER* and *CALIBRE_PASS*:
+
+```
+CALIBRE_USER=user CALIBRE_PASS=password docker run -d -e CALIBRE_USER -e CALIBRE_PASS -v calibre-config:/root/.config/calibre -v calibre-library:/books -p 9080:8080 mgering/calibre-server
+```
+
+Notice that in the above example, the environment variables are given values
+before the *docker run* command and they are only referred to by name in the 
+command itself. This prevents the values from showing up in the docker metadata
+at runtime, e.g. with the *docker ps* command.
+
+Also, if the given user already exists in the database, the password is updated.
