@@ -2,21 +2,20 @@
 # Dockerfile for calibre-server
 #
 
-FROM ubuntu
+FROM frolvlad/alpine-glibc
 LABEL maintainer="Mike Gering"
 LABEL description="Run a calibre-server within an ubuntu container."
 
-ENV CALIBRE_URL https://download.calibre-ebook.com/linux-installer.sh
-ENV CALIBRE_DEPS xdg-utils wget xz-utils python dumb-init
+ENV CALIBRE_URL https://raw.githubusercontent.com/kovidgoyal/calibre/master/setup/linux-installer.py
+#ENV CALIBRE_DEPS bash ca-certificates gcc mesa-gl qt5-qtbase-x11 xdg-utils wget xz python dumb-init libstdc++
 ENV CALIBRE_LIBRARY /books
 
-RUN set -xe \
-    && apt-get update \
-    && apt-get install -y $CALIBRE_DEPS \
+RUN apk --update add bash xdg-utils wget python dumb-init libstdc++ mesa-gl fontconfig \
     && mkdir /books \
-    && wget -nv -O- $CALIBRE_URL | sh /dev/stdin \
-    && calibredb add -e --with-library=/books \
-    && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+    && export PYTHONHTTPSVERIFY=0 \
+    && wget -O- ${CALIBRE_URL} | python -c "import sys; main=lambda:sys.stderr.write('Download failed\n'); exec(sys.stdin.read()); main(install_dir='/opt', isolated=True)" \
+    && echo "Got calibre"
+RUN /opt/calibre/calibredb add -e --with-library=/books
 COPY files/entrypoint.sh /entrypoint.sh
 COPY files/add_user.py /add_user.py
 
