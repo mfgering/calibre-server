@@ -5,7 +5,7 @@ The goal for this image is to run a calbre server that can interact with my favo
 
 I tried using *calibre-web* program. Unfortunately, it does not play well with *MoonReader+*, so I'm forced to use the *calibre-server* program.
 
-This docker image runs a calibre server in an Ubuntu OS.
+This docker image runs a calibre server in an Alpine OS.
 
 You will need one or more users and use authentication for modifying the library via the web interface. There are two ways to accomplish this, 
 as you will see in the following section.

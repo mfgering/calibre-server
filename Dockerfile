@@ -4,10 +4,9 @@
 
 FROM frolvlad/alpine-glibc
 LABEL maintainer="Mike Gering"
-LABEL description="Run a calibre-server within an ubuntu container."
+LABEL description="Run a calibre-server within an alpine container."
 
 ENV CALIBRE_URL https://raw.githubusercontent.com/kovidgoyal/calibre/master/setup/linux-installer.py
-#ENV CALIBRE_DEPS bash ca-certificates gcc mesa-gl qt5-qtbase-x11 xdg-utils wget xz python dumb-init libstdc++
 ENV CALIBRE_LIBRARY /books
 
 RUN apk --update add bash xdg-utils wget python dumb-init libstdc++ mesa-gl fontconfig \
